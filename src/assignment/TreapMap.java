@@ -160,8 +160,14 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
             return null;
         }
 
-        while(removeNode.right != null && removeNode.left != null){
-            if(removeNode.left.priority > removeNode.right.priority){
+        while(removeNode.right != null || removeNode.left != null){
+            if(removeNode.left != null && removeNode.right == null){
+                rotateRight(removeNode);
+            }
+            else if(removeNode.right != null && removeNode.left == null){
+                rotateLeft(removeNode);
+            }
+            else if(removeNode.left.priority > removeNode.right.priority){
                 rotateRight(removeNode);
             }
             else if(removeNode.right.priority >= removeNode.left.priority){
