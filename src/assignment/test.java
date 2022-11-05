@@ -32,7 +32,8 @@ public class test {
         System.out.println(t.toString());
         Treap<Integer, Integer>[] splitTreap = t.split(0);
         System.out.println("left subtreap");
-        System.out.println(splitTreap[0].toString());
+        //System.out.println(splitTreap[0].toString());
+        System.out.println("right subtreap");
         System.out.println(splitTreap[1].toString());
 
     }
