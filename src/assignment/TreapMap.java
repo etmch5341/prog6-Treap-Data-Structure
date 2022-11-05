@@ -99,10 +99,10 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         //Changing node and left reference
         left.right = node;
         node.parent = left;
-        //Chancing left and parent reference
+        //Changing left and parent reference
         left.parent = parent;
         if(parent != null){
-            if(parent.left.equals(node)){
+            if(parent.left != null && parent.left.equals(node)){
                 parent.left = left;
             }
             else{
@@ -128,7 +128,7 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         //Changing right and parent references
         right.parent = parent;
         if(parent != null){
-            if(parent.left.equals(node)){
+            if(parent.left != null && parent.left.equals(node)){
                 parent.left = right;
             }
             else{
@@ -231,7 +231,9 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         //Assign left and right subtreap
         if(tempPriority != -1){
             TreapNode<K, V> leftSubtreap = subRoot.left;
-            leftSubtreap.parent = null;
+            if(leftSubtreap != null){
+                leftSubtreap.parent = null;
+            }
             splitTreap[0] = new TreapMap(leftSubtreap);
             subRoot.priority = tempPriority;
             subRoot.left = null;
@@ -240,8 +242,12 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         else{
             TreapNode<K, V> leftSubtreap = subRoot.left;
             TreapNode<K, V> rightSubtreap = subRoot.right;
-            leftSubtreap.parent = null;
-            rightSubtreap.parent = null;
+            if(leftSubtreap != null){
+                leftSubtreap.parent = null;
+            }
+            if(rightSubtreap != null){
+                rightSubtreap.parent = null;
+            }
             splitTreap[0] = new TreapMap(leftSubtreap);
             splitTreap[1] = new TreapMap(rightSubtreap);
         }

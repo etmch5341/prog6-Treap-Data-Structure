@@ -30,7 +30,8 @@ public class test {
         System.out.println(t.toString());
         t.remove(10);
         System.out.println(t.toString());
-        Treap<Integer, Integer>[] splitTreap = t.split(10);
+        Treap<Integer, Integer>[] splitTreap = t.split(0);
+        System.out.println("left subtreap");
         System.out.println(splitTreap[0].toString());
         System.out.println(splitTreap[1].toString());
 
