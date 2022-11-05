@@ -23,6 +23,10 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         root.right.right = new TreapNode(9, 6, root.right, 1963);
     }
 
+    public TreapMap(TreapNode root){
+        this.root = root;
+    }
+
     @Override
     public V lookup(K key) {
         TreapNode current = root;
@@ -57,7 +61,7 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
         bstInsert(root, insertNode);
         //System.out.println(insertNode.parent.key);
-        while(insertNode.parent.priority < insertNode.priority){
+        while(insertNode.parent != null && insertNode.parent.priority < insertNode.priority){
             if(insertNode.parent.left.equals(insertNode)){
                 rotateRight(insertNode.parent);
             }
@@ -187,7 +191,62 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
     @Override
     public Treap<K, V>[] split(K key) {
-        return new Treap[0];
+        TreapNode<K, V> subRoot = new TreapNode<>(key, null, null, Treap.MAX_PRIORITY);
+        Treap<K, V>[] splitTreap = new TreapMap[2];
+        int tempPriority = -1;
+
+        //Null root case
+        if(root == null){
+            splitTreap[0] = null;
+            splitTreap[1] = null;
+            return splitTreap;
+        }
+
+        //Check for case where key exists in the Treap
+        if(lookup(key) != null){
+            subRoot = findNode(key);
+            tempPriority = subRoot.priority;
+            subRoot.priority = Treap.MAX_PRIORITY;
+        }
+        else{
+            bstInsert(root, subRoot);
+        }
+
+        //Make subRoot root
+        while(subRoot.parent != null && subRoot.parent.priority < subRoot.priority){
+            if(subRoot.parent.left == null && subRoot.parent.right != null){
+                rotateLeft(subRoot.parent);
+            }
+            else if(subRoot.parent.left != null && subRoot.parent.right == null){
+                rotateRight(subRoot.parent);
+            }
+            else if(subRoot.parent.left.equals(subRoot)){
+                rotateRight(subRoot.parent);
+            }
+            else if(subRoot.parent.right.equals(subRoot)){
+                rotateLeft(subRoot.parent);
+            }
+        }
+
+        //Assign left and right subtreap
+        if(tempPriority != -1){
+            TreapNode<K, V> leftSubtreap = subRoot.left;
+            leftSubtreap.parent = null;
+            splitTreap[0] = new TreapMap(leftSubtreap);
+            subRoot.priority = tempPriority;
+            subRoot.left = null;
+            splitTreap[1] = new TreapMap(subRoot);
+        }
+        else{
+            TreapNode<K, V> leftSubtreap = subRoot.left;
+            TreapNode<K, V> rightSubtreap = subRoot.right;
+            leftSubtreap.parent = null;
+            rightSubtreap.parent = null;
+            splitTreap[0] = new TreapMap(leftSubtreap);
+            splitTreap[1] = new TreapMap(rightSubtreap);
+        }
+
+        return splitTreap;
     }
 
     @Override

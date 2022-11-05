@@ -28,5 +28,11 @@ public class test {
         //System.out.println(t.lookup(7));
         t.remove(4);
         System.out.println(t.toString());
+        t.remove(10);
+        System.out.println(t.toString());
+        Treap<Integer, Integer>[] splitTreap = t.split(10);
+        System.out.println(splitTreap[0].toString());
+        System.out.println(splitTreap[1].toString());
+
     }
 }
