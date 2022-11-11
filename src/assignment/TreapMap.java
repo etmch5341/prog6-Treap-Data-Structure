@@ -23,6 +23,10 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         root.right.right = new TreapNode(9, 6, root.right, 1963);
     }
 
+    public TreapMap(K key, V value, int priority){
+        root = new TreapNode(key, value, null, priority);
+    }
+
     public TreapMap(TreapNode root){
         this.root = root;
     }
@@ -31,11 +35,11 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
     public V lookup(K key) {
         TreapNode current = root;
         while(current != null && key.compareTo((K)current.key) != 0){
-            //Key <= current
+            //Key < current
             if(key.compareTo((K)current.key) < 0){
                 current = current.left;
             }
-            //Key >= current
+            //Key > current
             else if(key.compareTo((K)current.key) > 0){
                 current = current.right;
             }
@@ -48,7 +52,9 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
     @Override
     public void insert(K key, V value) {
+        //TODO: Make sure that you don't use priority constructor
         TreapNode<K, V> insertNode = new TreapNode(key, value, null, 4743);
+        //TreapNode<K, V> insertNode = new TreapNode(key, value, null);
         if(root == null){
             root = insertNode;
             return;
@@ -62,7 +68,13 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         bstInsert(root, insertNode);
         //System.out.println(insertNode.parent.key);
         while(insertNode.parent != null && insertNode.parent.priority < insertNode.priority){
-            if(insertNode.parent.left.equals(insertNode)){
+            if(insertNode.parent.left == null && insertNode.parent.right != null){
+                rotateLeft(insertNode.parent);
+            }
+            else if(insertNode.parent.left != null && insertNode.parent.right == null){
+                rotateRight(insertNode.parent);
+            }
+            else if(insertNode.parent.left.equals(insertNode)){
                 rotateRight(insertNode.parent);
             }
             else if(insertNode.parent.right.equals(insertNode)){
@@ -71,19 +83,82 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         }
     }
 
+    //TESTING INSERT METHOD TO SET PRIORITIES
+    public void insert(K key, V value, int priority) {
+        //TODO: Make sure that you don't use priority constructor
+        TreapNode<K, V> insertNode = new TreapNode(key, value, null, priority);
+        //TreapNode<K, V> insertNode = new TreapNode(key, value, null);
+        if(root == null){
+            root = insertNode;
+            return;
+        }
+
+        if(lookup(key) != null){
+            findNode(key).value = value;
+            return;
+        }
+
+        bstInsert(root, insertNode);
+        //System.out.println(insertNode.parent.key);
+        while(insertNode.parent != null && insertNode.parent.priority < insertNode.priority){
+            if(insertNode.parent.left == null && insertNode.parent.right != null){
+                rotateLeft(insertNode.parent);
+            }
+            else if(insertNode.parent.left != null && insertNode.parent.right == null){
+                rotateRight(insertNode.parent);
+            }
+            else if(insertNode.parent.left.equals(insertNode)){
+                rotateRight(insertNode.parent);
+            }
+            else if(insertNode.parent.right.equals(insertNode)){
+                rotateLeft(insertNode.parent);
+            }
+        }
+    }
+
+    private void insertNode(TreapNode node){
+        System.out.println("before");
+        System.out.println(toString());
+        bstInsert(root, node);
+        System.out.println("BST Insert");
+        System.out.println(toString());
+        //System.out.println(insertNode.parent.key);
+        while(node.parent != null && node.parent.priority < node.priority){
+            if(node.parent.left == null && node.parent.right != null){
+                rotateLeft(node.parent);
+            }
+            else if(node.parent.left != null && node.parent.right == null){
+                rotateRight(node.parent);
+            }
+            else if(node.parent.left.equals(node)){
+                rotateRight(node.parent);
+            }
+            else if(node.parent.right.equals(node)){
+                rotateLeft(node.parent);
+            }
+        }
+
+        System.out.println(toString());
+    }
+
+    /**
+     * Finds the node with specified key and returns the node if it is found.
+     * If it does not exist in the treap, it will return null.
+     * @param key
+     * @return
+     */
     private TreapNode findNode(K key){
         TreapNode current = root;
         while(current != null && !current.key.equals(key)){
-            //Key <= current
+            //Key < current key
             if(key.compareTo((K)current.key) < 0){
                 current = current.left;
             }
-            //Key >= current
+            //Key > current key
             else if(key.compareTo((K)current.key) > 0){
                 current = current.right;
             }
         }
-
         return current;
     }
 
@@ -108,6 +183,10 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
             else{
                 parent.right = left;
             }
+        }
+        //Update root if node is root
+        if(node.equals(root)){
+            root = left;
         }
         //New subtree root
         return left;
@@ -134,6 +213,10 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
             else{
                 parent.right = right;
             }
+        }
+        //Update root if node is root
+        if(node.equals(root)){
+            root = right;
         }
         //New subtree root
         return right;
@@ -179,7 +262,7 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
             }
         }
 
-        if(removeNode.parent.left.equals(removeNode)){
+        if(removeNode.parent.left != null && removeNode.parent.left.equals(removeNode)){
             removeNode.parent.left = null;
         }
         else{
@@ -191,12 +274,13 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
     @Override
     public Treap<K, V>[] split(K key) {
-        TreapNode<K, V> subRoot = new TreapNode<>(key, null, null, Treap.MAX_PRIORITY);
+        TreapNode<K, V> subRoot = new TreapNode<>(key, null, null, Treap.MAX_PRIORITY + 1);
         Treap<K, V>[] splitTreap = new TreapMap[2];
         int tempPriority = -1;
+        V tempValue = null;
 
-        //Null root case
-        if(root == null){
+        //Null root case and key null case
+        if(root == null || key == null){
             splitTreap[0] = null;
             splitTreap[1] = null;
             return splitTreap;
@@ -204,29 +288,15 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
         //Check for case where key exists in the Treap
         if(lookup(key) != null){
-            subRoot = findNode(key);
-            tempPriority = subRoot.priority;
-            subRoot.priority = Treap.MAX_PRIORITY;
-        }
-        else{
-            bstInsert(root, subRoot);
+            //subRoot = (TreapNode<K, V>) (findNode(key)).clone();
+            TreapNode tempNode = findNode(key);
+            tempPriority = tempNode.priority;
+            tempValue = (V)tempNode.value;
+            remove(key);
         }
 
-        //Make subRoot root
-        while(subRoot.parent != null && subRoot.parent.priority < subRoot.priority){
-            if(subRoot.parent.left == null && subRoot.parent.right != null){
-                rotateLeft(subRoot.parent);
-            }
-            else if(subRoot.parent.left != null && subRoot.parent.right == null){
-                rotateRight(subRoot.parent);
-            }
-            else if(subRoot.parent.left.equals(subRoot)){
-                rotateRight(subRoot.parent);
-            }
-            else if(subRoot.parent.right.equals(subRoot)){
-                rotateLeft(subRoot.parent);
-            }
-        }
+        //Make subroot root
+        insertNode(subRoot);
 
         //Assign left and right subtreap
         if(tempPriority != -1){
@@ -236,6 +306,7 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
             }
             splitTreap[0] = new TreapMap(leftSubtreap);
             subRoot.priority = tempPriority;
+            subRoot.value = tempValue;
             subRoot.left = null;
             splitTreap[1] = new TreapMap(subRoot);
         }
@@ -255,15 +326,33 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         return splitTreap;
     }
 
+    //Can guarentee that the keys in one treap are strictly greater than another
     @Override
     public void join(Treap<K, V> t) {
-
+        if(!(t instanceof TreapMap)){
+            return;
+        }
+        TreapMap<K, V> joinTreap = new TreapMap<>((K)root.key, (V)root.value);
+        K cKey = (K)root.key;
+        K tKey = ((K)((TreapMap)t).getKey());
+        //tKey < cKey
+        if(tKey.compareTo(cKey) < 0){
+            joinTreap.root.left = ((TreapMap)t).root;
+            joinTreap.root.right = root;
+        }
+        //tKey > cKey
+        else if(tKey.compareTo(cKey) > 0){
+            joinTreap.root.left = root;
+            joinTreap.root.right = ((TreapMap)t).root;
+        }
+        joinTreap.remove((K)joinTreap.root.key);
+        root = joinTreap.root;
     }
 
     //In-order
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return new TreapIterator(root);
     }
 
     @Override
@@ -316,5 +405,9 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
     @Override
     public void difference(Treap t) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
+    }
+
+    public K getKey(){
+        return (K)root.key;
     }
 }

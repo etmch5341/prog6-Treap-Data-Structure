@@ -36,7 +36,7 @@ public interface Treap<K extends Comparable<K>, V> extends Iterable<K> {
     void insert(K key, V value);
 
     /**
-     * Removes a key from this dictionary.  If the key is not present
+         * Removes a key from this dictionary.  If the key is not present
      * in this dictionary, this method does nothing.  Returns the
      * value associated with the removed key, or null if the key
      * is not present.
