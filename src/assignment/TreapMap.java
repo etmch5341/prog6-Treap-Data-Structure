@@ -15,12 +15,12 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         root = new TreapNode(key, value, null);
 
         //Test: Figure 2 Treap
-        root = new TreapNode(6, 1, null, 9403);
-        root.left = new TreapNode(3, 2, root, 4407);
-        root.right = new TreapNode(8, 3, root, 7336);
-        root.left.left = new TreapNode(1, 4, root.left, 2486);
-        root.left.right = new TreapNode(5, 5, root.left, 1059);
-        root.right.right = new TreapNode(9, 6, root.right, 1963);
+//        root = new TreapNode(6, 1, null, 9403);
+//        root.left = new TreapNode(3, 2, root, 4407);
+//        root.right = new TreapNode(8, 3, root, 7336);
+//        root.left.left = new TreapNode(1, 4, root.left, 2486);
+//        root.left.right = new TreapNode(5, 5, root.left, 1059);
+//        root.right.right = new TreapNode(9, 6, root.right, 1963);
     }
 
     public TreapMap(K key, V value, int priority){
@@ -53,8 +53,8 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
     @Override
     public void insert(K key, V value) {
         //TODO: Make sure that you don't use priority constructor
-        TreapNode<K, V> insertNode = new TreapNode(key, value, null, 4743);
-        //TreapNode<K, V> insertNode = new TreapNode(key, value, null);
+        //TreapNode<K, V> insertNode = new TreapNode(key, value, null, 4743);
+        TreapNode<K, V> insertNode = new TreapNode(key, value, null);
         if(root == null){
             root = insertNode;
             return;
@@ -116,6 +116,8 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
         }
     }
 
+    //TODO: Probably can remove this method and just
+    // use the overloaded method that have a priority as parameter
     private void insertNode(TreapNode node){
         System.out.println("before");
         System.out.println(toString());
@@ -409,5 +411,9 @@ public class TreapMap<K extends Comparable<K>, V> implements Treap<K, V> {
 
     public K getKey(){
         return (K)root.key;
+    }
+
+    public TreapNode getRoot(){
+        return root;
     }
 }
