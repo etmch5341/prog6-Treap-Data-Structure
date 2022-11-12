@@ -8,6 +8,7 @@ public class TreapNode<K, V> {
     public TreapNode right;
     public TreapNode parent;
 
+    //Create new TreapNode with key, value, and parent
     public TreapNode(K key, V value, TreapNode parent){
         this.key = key;
         this.value = value;
@@ -15,8 +16,7 @@ public class TreapNode<K, V> {
         this.parent = parent;
     }
 
-    //TEST CONSTRUCTOR
-    //TODO: REMOVE ONCE DONE
+    //Create new TreapNode with a set key, value, parent, and priority
     public TreapNode(K key, V value, TreapNode parent, int priority){
         this.key = key;
         this.value = value;
@@ -24,6 +24,7 @@ public class TreapNode<K, V> {
         this.parent = parent;
     }
 
+    //Return value of the TreapNode
     public V getValue(){
         return value;
     }

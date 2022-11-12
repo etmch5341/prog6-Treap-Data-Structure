@@ -15,14 +15,25 @@ public class test {
 //
 //        System.out.println(t.lookup(2));
 
-        TreapMap<Integer, Integer> t = new TreapMap<>(1, 1);
+        TreapMap<Integer, Integer> t = new TreapMap<>(6, 1, 9403);
 
+        //Test: Figure 2 Treap
+//        root = new TreapNode(6, 1, null, 9403);
+//        root.left = new TreapNode(3, 2, root, 4407);
+//        root.right = new TreapNode(8, 3, root, 7336);
+//        root.left.left = new TreapNode(1, 4, root.left, 2486);
+//        root.left.right = new TreapNode(5, 5, root.left, 1059);
+//        root.right.right = new TreapNode(9, 6, root.right, 1963);
 
         System.out.println(t.toString());
-//        t.insert(10, 10);
-//        t.insert(7, 7);
-        t.insert(4, 4);
-        //t.insert(3, 21);
+
+        t.insert(6, 1, 9403);
+        t.insert(3, 2, 4407);
+        t.insert(8, 3, 7336);
+        t.insert(1, 4, 2486);
+        t.insert(5, 5, 1059);
+        t.insert(9, 6, 1963);
+        t.insert(4, 4, 4743);
         System.out.println("insert 4");
         System.out.println(t.toString());
         //System.out.println(t.lookup(7));
@@ -37,7 +48,7 @@ public class test {
         System.out.println("--------------------");
 
         //TESTING SPLIT
-        Treap<Integer, Integer>[] splitTreap = t.split(6);
+        Treap<Integer, Integer>[] splitTreap = t.split(10);
         System.out.println("left subtreap");
         System.out.println(splitTreap[0].toString());
         System.out.println("right subtreap");

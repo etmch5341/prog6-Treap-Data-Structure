@@ -5,13 +5,16 @@ import java.util.Stack;
 
 public class TreapIterator implements Iterator {
     TreapMap treap;
+    TreapNode root;
 
     private Stack<TreapNode> s;
     public TreapIterator(TreapNode root){
         treap = new TreapMap((Comparable) root.key, root.value, root.priority);
+        this.root = root;
         instantiateTreap(root);
         s = new Stack<>();
         pushLeft(treap.getRoot());
+        //pushLeft(root);
     }
 
     @Override
